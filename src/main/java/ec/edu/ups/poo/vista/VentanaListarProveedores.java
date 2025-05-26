@@ -13,7 +13,7 @@ public class VentanaListarProveedores extends Frame implements ActionListener {
 
     private GestionDeComprasModelo model;
     private TextArea areaProveedores;
-    private Button botonActualizar; // Declaración del nuevo botón
+    private Button botonActualizar;
     private Button botonCerrar;
 
 

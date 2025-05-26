@@ -34,7 +34,7 @@ public class VentanaRegistrarProductoRopa extends Frame implements ActionListene
         setLayout(new BorderLayout(10, 10));
         setBackground(new Color(255, 255, 204));
 
-        Panel panelGeneral = new Panel(new GridLayout(4, 2, 5, 5)); // Ajustado a 4 filas
+        Panel panelGeneral = new Panel(new GridLayout(4, 2, 5, 5));
 
         etiquetaId = new Label("ID:");
         campoId = new TextField(10);
@@ -75,7 +75,7 @@ public class VentanaRegistrarProductoRopa extends Frame implements ActionListene
         panelBotones.add(botonCerrar);
         add(panelBotones, BorderLayout.SOUTH);
 
-        setSize(500, 350); // Ajustar tamaño si es necesario
+        setSize(500, 350);
         setResizable(false);
         setVisible(true);
 
