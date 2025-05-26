@@ -21,11 +21,7 @@ public class VentanaRegistrarProductoAlimento extends Frame implements ActionLis
     private Label etiquetaPrecio;
     private TextField campoPrecio;
     private Label etiquetaUnidad;
-    private CheckboxGroup grupoUnidadMedida;
-    private Checkbox cbTallaUnidad;
-    private Checkbox cbKilogramo;
-    private Checkbox cbLitro;
-    private Checkbox cbMetro;
+    private CheckboxGroup grupoUnidadDeMedida;
 
     private Label etiquetaFechaExpiracion;
     private TextField campoAnioExp;
@@ -63,15 +59,12 @@ public class VentanaRegistrarProductoAlimento extends Frame implements ActionLis
         etiquetaUnidad = new Label("Unidad de Medida:");
         panelGeneral.add(etiquetaUnidad);
         Panel panelUnidad = new Panel(new FlowLayout(FlowLayout.LEFT));
-        grupoUnidadMedida = new CheckboxGroup();
-        cbTallaUnidad = new Checkbox(UnidadDeMedida.TALLA.name(), grupoUnidadMedida, false);
-        cbKilogramo = new Checkbox(UnidadDeMedida.KILOGRAMO.name(), grupoUnidadMedida, false);
-        cbLitro = new Checkbox(UnidadDeMedida.LITRO.name(), grupoUnidadMedida, false);
-        cbMetro = new Checkbox(UnidadDeMedida.METRO.name(), grupoUnidadMedida, false);
-        panelUnidad.add(cbTallaUnidad);
-        panelUnidad.add(cbKilogramo);
-        panelUnidad.add(cbLitro);
-        panelUnidad.add(cbMetro);
+        grupoUnidadDeMedida = new CheckboxGroup();
+
+        for (UnidadDeMedida um : UnidadDeMedida.values()) {
+            panelUnidad.add(new Checkbox(um.name(), grupoUnidadDeMedida, false));
+        }
+
         panelGeneral.add(panelUnidad);
 
         etiquetaFechaExpiracion = new Label("Fecha Expiración (Año Mes Día):");
@@ -125,7 +118,7 @@ public class VentanaRegistrarProductoAlimento extends Frame implements ActionLis
             String idStr = campoId.getText().trim();
             String nombre = campoNombre.getText().trim();
             String precioStr = campoPrecio.getText().trim();
-            Checkbox selectedUnitCheckbox = grupoUnidadMedida.getSelectedCheckbox();
+            Checkbox selectedUnitCheckbox = grupoUnidadDeMedida.getSelectedCheckbox();
 
             String anioStr = campoAnioExp.getText().trim();
             String mesStr = campoMesExp.getText().trim();
@@ -137,29 +130,45 @@ public class VentanaRegistrarProductoAlimento extends Frame implements ActionLis
                 return;
             }
 
-            int id = Integer.parseInt(idStr);
-            double precio = Double.parseDouble(precioStr);
-            UnidadDeMedida medida = UnidadDeMedida.valueOf(selectedUnitCheckbox.getLabel().toUpperCase());
+            try {
+                int id = Integer.parseInt(idStr);
+                double precio = Double.parseDouble(precioStr);
 
-            int anio = Integer.parseInt(anioStr);
-            int mes = Integer.parseInt(mesStr) - 1;
-            int dia = Integer.parseInt(diaStr);
+                if (model.findProductoById(id) != null) {
+                    areaMensajes.append("Error: Ya existe un producto con el ID " + id + ".\n");
+                    return;
+                }
 
-            GregorianCalendar fechaExpiracion = new GregorianCalendar(anio, mes, dia);
-            fechaExpiracion.setLenient(false);
-            fechaExpiracion.getTime();
+                UnidadDeMedida medida = UnidadDeMedida.valueOf(selectedUnitCheckbox.getLabel().toUpperCase());
 
-            ProductoAlimento nuevoAlimento = new ProductoAlimento(id, nombre, precio, medida, fechaExpiracion);
-            model.addProducto(nuevoAlimento);
-            areaMensajes.append("Producto Alimento registrado exitosamente:\n" + nuevoAlimento.imprimirDetalle());
+                int anio = Integer.parseInt(anioStr);
+                int mes = Integer.parseInt(mesStr) - 1;
+                int dia = Integer.parseInt(diaStr);
 
-            campoId.setText("");
-            campoNombre.setText("");
-            campoPrecio.setText("");
-            grupoUnidadMedida.setSelectedCheckbox(null);
-            campoAnioExp.setText("");
-            campoMesExp.setText("");
-            campoDiaExp.setText("");
+                GregorianCalendar fechaExpiracion = new GregorianCalendar(anio, mes, dia);
+                fechaExpiracion.setLenient(false);
+                fechaExpiracion.getTime();
+
+                ProductoAlimento nuevoAlimento = new ProductoAlimento(id, nombre, precio, medida, fechaExpiracion);
+                model.addProducto(nuevoAlimento);
+                areaMensajes.append("Producto Alimento registrado exitosamente:\n" + nuevoAlimento.imprimirDetalle());
+
+                campoId.setText("");
+                campoNombre.setText("");
+                campoPrecio.setText("");
+                grupoUnidadDeMedida.setSelectedCheckbox(null);
+                campoAnioExp.setText("");
+                campoMesExp.setText("");
+                campoDiaExp.setText("");
+
+            } catch (NumberFormatException ex) {
+                areaMensajes.append("Error de formato: Asegúrese de que ID, Precio, Año, Mes y Día sean números válidos.\n");
+            } catch (IllegalArgumentException ex) {
+                areaMensajes.append("Error en la fecha o unidad de medida: " + ex.getMessage() + "\n");
+            } catch (Exception ex) {
+                areaMensajes.append("Ocurrió un error inesperado al guardar el alimento: " + ex.getMessage() + "\n");
+                ex.printStackTrace();
+            }
 
         } else if (command.equals("Cerrar Ventana")) {
             setVisible(false);

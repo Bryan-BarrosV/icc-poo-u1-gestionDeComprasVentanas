@@ -1,17 +1,14 @@
 package ec.edu.ups.poo.clases;
-import ec.edu.ups.poo.enums.UnidadDeMedida;
 
-public abstract class Producto {
+public class Producto {
     private int id;
     private String nombre;
     private double precioUnitario;
-    private UnidadDeMedida medida;
 
-    public Producto(int id, String nombre, double precioUnitario, UnidadDeMedida medida) {
+    public Producto(int id, String nombre, double precioUnitario) {
         this.id = id;
         this.nombre = nombre;
         this.precioUnitario = precioUnitario;
-        this.medida = medida;
     }
 
     public int getId() {
@@ -26,12 +23,13 @@ public abstract class Producto {
         return precioUnitario;
     }
 
-    public UnidadDeMedida getMedida() {
-        return medida;
+    public double calcularDescuento(double porcentaje) {
+        return precioUnitario;
     }
-    public abstract double calcularDescuento(double porcentaje);
 
-    public abstract String imprimirDetalle();
+    public String imprimirDetalle() {
+        return "ID: " + id + ", Nombre: " + nombre + ", Precio: " + precioUnitario;
+    }
 
     @Override
     public String toString() {
@@ -39,7 +37,6 @@ public abstract class Producto {
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 ", precioUnitario=" + precioUnitario +
-                ", medida=" + medida +
                 '}';
     }
 }

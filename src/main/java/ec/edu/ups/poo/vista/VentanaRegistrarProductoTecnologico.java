@@ -2,7 +2,7 @@ package ec.edu.ups.poo.vista;
 
 import ec.edu.ups.poo.modelo.GestionDeComprasModelo;
 import ec.edu.ups.poo.clases.ProductoTecnologico;
-import ec.edu.ups.poo.enums.UnidadDeMedida;
+import ec.edu.ups.poo.enums.EstadoProducto;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,12 +19,11 @@ public class VentanaRegistrarProductoTecnologico extends Frame implements Action
     private TextField campoNombre;
     private Label etiquetaPrecio;
     private TextField campoPrecio;
-    private Label etiquetaUnidad;
-    private CheckboxGroup grupoUnidadMedida;
-    private Checkbox cbTallaUnidad;
-    private Checkbox cbKilogramo;
-    private Checkbox cbLitro;
-    private Checkbox cbMetro;
+
+    private Label etiquetaGarantia;
+    private TextField campoGarantia;
+    private Label etiquetaEstadoProducto;
+    private CheckboxGroup grupoEstadoProducto;
 
     private Button botonGuardar;
     private Button botonCerrar;
@@ -37,7 +36,7 @@ public class VentanaRegistrarProductoTecnologico extends Frame implements Action
         setLayout(new BorderLayout(10, 10));
         setBackground(new Color(255, 255, 204));
 
-        Panel panelGeneral = new Panel(new GridLayout(4, 2, 5, 5));
+        Panel panelGeneral = new Panel(new GridLayout(5, 2, 5, 5));
 
         etiquetaId = new Label("ID:");
         campoId = new TextField(10);
@@ -54,19 +53,19 @@ public class VentanaRegistrarProductoTecnologico extends Frame implements Action
         panelGeneral.add(etiquetaPrecio);
         panelGeneral.add(campoPrecio);
 
-        etiquetaUnidad = new Label("Unidad de Medida:");
-        panelGeneral.add(etiquetaUnidad);
-        Panel panelUnidad = new Panel(new FlowLayout(FlowLayout.LEFT));
-        grupoUnidadMedida = new CheckboxGroup();
-        cbTallaUnidad = new Checkbox(UnidadDeMedida.TALLA.name(), grupoUnidadMedida, false);
-        cbKilogramo = new Checkbox(UnidadDeMedida.KILOGRAMO.name(), grupoUnidadMedida, false);
-        cbLitro = new Checkbox(UnidadDeMedida.LITRO.name(), grupoUnidadMedida, false);
-        cbMetro = new Checkbox(UnidadDeMedida.METRO.name(), grupoUnidadMedida, false);
-        panelUnidad.add(cbTallaUnidad);
-        panelUnidad.add(cbKilogramo);
-        panelUnidad.add(cbLitro);
-        panelUnidad.add(cbMetro);
-        panelGeneral.add(panelUnidad);
+        etiquetaGarantia = new Label("Garantía (días):");
+        campoGarantia = new TextField(10);
+        panelGeneral.add(etiquetaGarantia);
+        panelGeneral.add(campoGarantia);
+
+        etiquetaEstadoProducto = new Label("Estado:");
+        panelGeneral.add(etiquetaEstadoProducto);
+        Panel panelEstado = new Panel(new FlowLayout(FlowLayout.LEFT));
+        grupoEstadoProducto = new CheckboxGroup();
+        for (EstadoProducto ep : EstadoProducto.values()) {
+            panelEstado.add(new Checkbox(ep.name(), grupoEstadoProducto, false));
+        }
+        panelGeneral.add(panelEstado);
 
         add(panelGeneral, BorderLayout.NORTH);
 
@@ -83,7 +82,7 @@ public class VentanaRegistrarProductoTecnologico extends Frame implements Action
         panelBotones.add(botonCerrar);
         add(panelBotones, BorderLayout.SOUTH);
 
-        setSize(500, 350);
+        setSize(500, 400);
         setResizable(false);
         setVisible(true);
 
@@ -106,25 +105,44 @@ public class VentanaRegistrarProductoTecnologico extends Frame implements Action
             String idStr = campoId.getText().trim();
             String nombre = campoNombre.getText().trim();
             String precioStr = campoPrecio.getText().trim();
-            Checkbox selectedUnitCheckbox = grupoUnidadMedida.getSelectedCheckbox();
+            String garantiaStr = campoGarantia.getText().trim();
+            Checkbox selectedEstadoCheckbox = grupoEstadoProducto.getSelectedCheckbox();
 
-            if (idStr.isEmpty() || nombre.isEmpty() || precioStr.isEmpty() || selectedUnitCheckbox == null) {
-                areaMensajes.append("Todos los campos comunes y la unidad de medida son obligatorios.");
+            if (idStr.isEmpty() || nombre.isEmpty() || precioStr.isEmpty() || garantiaStr.isEmpty() || selectedEstadoCheckbox == null) {
+                areaMensajes.append("Todos los campos son obligatorios.");
                 return;
             }
 
-            int id = Integer.parseInt(idStr);
-            double precio = Double.parseDouble(precioStr);
-            UnidadDeMedida medida = UnidadDeMedida.valueOf(selectedUnitCheckbox.getLabel().toUpperCase());
+            try {
+                int id = Integer.parseInt(idStr);
+                double precio = Double.parseDouble(precioStr);
+                int garantia = Integer.parseInt(garantiaStr);
 
-            ProductoTecnologico nuevoTecnologico = new ProductoTecnologico(id, nombre, precio, medida);
-            model.addProducto(nuevoTecnologico);
-            areaMensajes.append("Producto Tecnológico registrado exitosamente:\n" + nuevoTecnologico.imprimirDetalle());
+                if (model.findProductoById(id) != null) {
+                    areaMensajes.append("Error: Ya existe un producto con el ID " + id + ".\n");
+                    return;
+                }
 
-            campoId.setText("");
-            campoNombre.setText("");
-            campoPrecio.setText("");
-            grupoUnidadMedida.setSelectedCheckbox(null);
+                EstadoProducto estado = EstadoProducto.valueOf(selectedEstadoCheckbox.getLabel().toUpperCase());
+
+                ProductoTecnologico nuevoTecnologico = new ProductoTecnologico(id, nombre, precio, garantia, estado);
+                model.addProducto(nuevoTecnologico);
+                areaMensajes.append("Producto Tecnológico registrado exitosamente:\n" + nuevoTecnologico.imprimirDetalle());
+
+                campoId.setText("");
+                campoNombre.setText("");
+                campoPrecio.setText("");
+                campoGarantia.setText("");
+                grupoEstadoProducto.setSelectedCheckbox(null);
+
+            } catch (NumberFormatException ex) {
+                areaMensajes.append("Error de formato: Asegúrese de que ID, Precio y Garantía sean números válidos.\n");
+            } catch (IllegalArgumentException ex) {
+                areaMensajes.append("Error en el estado seleccionado: " + ex.getMessage() + "\n");
+            } catch (Exception ex) {
+                areaMensajes.append("Ocurrió un error inesperado al guardar el producto tecnológico: " + ex.getMessage() + "\n");
+                ex.printStackTrace();
+            }
 
         } else if (command.equals("Cerrar Ventana")) {
             setVisible(false);

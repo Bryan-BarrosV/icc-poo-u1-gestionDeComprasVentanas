@@ -1,6 +1,9 @@
 package ec.edu.ups.poo.vista;
 
 import ec.edu.ups.poo.modelo.GestionDeComprasModelo;
+import ec.edu.ups.poo.vista.VentanaRegistrarProductoAlimento;
+import ec.edu.ups.poo.vista.VentanaRegistrarProductoRopa;
+import ec.edu.ups.poo.vista.VentanaRegistrarProductoTecnologico;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

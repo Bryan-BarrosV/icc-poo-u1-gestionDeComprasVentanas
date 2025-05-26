@@ -7,6 +7,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import ec.edu.ups.poo.modelo.GestionDeComprasModelo;
 import ec.edu.ups.poo.clases.Producto;
+import ec.edu.ups.poo.clases.ProductoAlimento;
+import ec.edu.ups.poo.clases.ProductoRopa;
+import ec.edu.ups.poo.clases.ProductoTecnologico;
 import java.util.List;
 
 public class VentanaListarProductos extends Frame implements ActionListener {
@@ -64,7 +67,24 @@ public class VentanaListarProductos extends Frame implements ActionListener {
                 areaListadoProductos.append("ID: " + p.getId() + "\n");
                 areaListadoProductos.append("  Nombre: " + p.getNombre() + "\n");
                 areaListadoProductos.append("  Precio Unitario: " + p.getPrecioUnitario() + "\n");
-                areaListadoProductos.append("  Unidad de Medida: " + p.getMedida() + "\n");
+
+                if (p instanceof ProductoAlimento) {
+                    ProductoAlimento pa = (ProductoAlimento) p;
+                    areaListadoProductos.append("  Tipo: Alimento\n");
+                    areaListadoProductos.append("  Unidad de Medida: " + pa.getMedida() + "\n");
+                    areaListadoProductos.append("  Fecha de Expiración: " + pa.imprimirDetalle().split("Fecha de Expiración: ")[1] + "\n");
+                } else if (p instanceof ProductoRopa) {
+                    ProductoRopa pr = (ProductoRopa) p;
+                    areaListadoProductos.append("  Tipo: Ropa\n");
+                    areaListadoProductos.append("  Talla: " + pr.getTalla() + "\n");
+                } else if (p instanceof ProductoTecnologico) {
+                    ProductoTecnologico pt = (ProductoTecnologico) p;
+                    areaListadoProductos.append("  Tipo: Tecnológico\n");
+                    areaListadoProductos.append("  Garantía: " + pt.getGarantia() + " días\n");
+                    areaListadoProductos.append("  Estado: " + pt.getEstado() + "\n");
+                } else {
+                    areaListadoProductos.append("  Tipo: Genérico (o no reconocido)\n");
+                }
                 areaListadoProductos.append("--------------------------------\n");
             }
         }
