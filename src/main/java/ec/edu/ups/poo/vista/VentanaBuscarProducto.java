@@ -15,6 +15,7 @@ public class VentanaBuscarProducto extends Frame {
         super(title);
         setSize(400, 300);
         setLayout(new FlowLayout());
+        setBackground(new Color(255, 255, 204));
 
         add(new Label("Nombre del Producto:"));
         nombreField = new TextField(20);

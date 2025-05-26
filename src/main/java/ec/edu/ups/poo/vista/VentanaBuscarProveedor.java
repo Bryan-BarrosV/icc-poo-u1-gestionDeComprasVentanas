@@ -15,6 +15,7 @@ public class VentanaBuscarProveedor extends Frame {
         super(title);
         setSize(400, 300);
         setLayout(new FlowLayout());
+        setBackground(new Color(255, 255, 204));
 
         add(new Label("RUC del Proveedor:"));
         rucField = new TextField(20);

@@ -15,6 +15,7 @@ public class VentanaCalcularTotal extends Frame implements ActionListener {
         this.modelo = modelo;
 
         setLayout(new FlowLayout());
+        setBackground(new Color(255, 255, 204));
 
         Label numeroLabel = new Label("Ingrese Número de Solicitud:");
         numeroField = new TextField(20);

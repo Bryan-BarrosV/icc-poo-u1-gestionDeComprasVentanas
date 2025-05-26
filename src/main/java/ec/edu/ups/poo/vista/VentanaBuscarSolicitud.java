@@ -15,6 +15,7 @@ public class VentanaBuscarSolicitud extends Frame {
         super(title);
         setSize(400, 300);
         setLayout(new FlowLayout());
+        setBackground(new Color(255, 255, 204));
 
         add(new Label("Número de Solicitud:"));
         numeroField = new TextField(20);
