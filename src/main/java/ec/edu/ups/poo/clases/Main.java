@@ -1,6 +1,8 @@
 package ec.edu.ups.poo.clases;
 import ec.edu.ups.poo.enums.EstadoSolicitud;
 import ec.edu.ups.poo.enums.UnidadDeMedida;
+import ec.edu.ups.poo.enums.Talla;
+import ec.edu.ups.poo.enums.EstadoProducto;
 import ec.edu.ups.poo.modelo.GestionDeComprasModelo;
 import ec.edu.ups.poo.vista.VentanaPrincipal;
 
@@ -39,6 +41,7 @@ public class Main {
                     System.out.println("===== Registrar Proveedor =====");
                     System.out.print("Id: ");
                     int id = scanner.nextInt();
+                    scanner.nextLine();
                     System.out.print("Nombre: ");
                     String nombreProveedor = scanner.nextLine();
                     System.out.print("RUC: ");
@@ -64,9 +67,6 @@ public class Main {
                     double precio = scanner.nextDouble();
                     scanner.nextLine();
 
-                    System.out.println("Unidad de medida (TALLA, KILOGRAMO, LITRO, METRO): ");
-                    UnidadDeMedida medida = UnidadDeMedida.valueOf(scanner.nextLine().toUpperCase());
-
                     System.out.println("Tipo de producto: ");
                     System.out.println("1. Alimento");
                     System.out.println("2. Ropa");
@@ -75,19 +75,29 @@ public class Main {
                     scanner.nextLine();
 
                     if (tipo == 1) {
+                        System.out.println("Unidad de medida (LIBRA, KILOGRAMO, LITRO, GRAMO): ");
+                        UnidadDeMedida medidaAlimento = UnidadDeMedida.valueOf(scanner.nextLine().toUpperCase());
                         System.out.println("Ingrese fecha de expiración (año mes día): ");
                         int anio = scanner.nextInt();
                         int mes = scanner.nextInt() - 1;
                         int dia = scanner.nextInt();
                         scanner.nextLine();
-                        productos.add(new ProductoAlimento(idProducto, nombreProducto, precio, medida, new GregorianCalendar(anio, mes, dia)));
+                        productos.add(new ProductoAlimento(idProducto, nombreProducto, precio, medidaAlimento, new GregorianCalendar(anio, mes, dia)));
                     } else if (tipo == 2) {
-                        System.out.print("Ingrese talla: ");
-                        String talla = scanner.nextLine();
-                        productos.add(new ProductoRopa(idProducto, nombreProducto, precio, medida, talla));
+
+                        System.out.print("Ingrese talla (M, L, S, X): ");
+                        String tallaStr = scanner.nextLine().toUpperCase();
+                        Talla talla = Talla.valueOf(tallaStr);
+                        productos.add(new ProductoRopa(idProducto, nombreProducto, precio, talla));
                     } else if (tipo == 3) {
-                        ProductoTecnologico pt = new ProductoTecnologico(idProducto, nombreProducto, precio, medida);
-                        productos.add(pt);
+
+                        System.out.print("Garantía (días): ");
+                        int garantia = scanner.nextInt();
+                        scanner.nextLine();
+                        System.out.println("Estado (NUEVO, SEMINUEVO): ");
+                        String estadoStr = scanner.nextLine().toUpperCase();
+                        EstadoProducto estado = EstadoProducto.valueOf(estadoStr);
+                        productos.add(new ProductoTecnologico(idProducto, nombreProducto, precio, garantia, estado));
                     } else {
                         System.out.println("Tipo inválido. ");
                     }

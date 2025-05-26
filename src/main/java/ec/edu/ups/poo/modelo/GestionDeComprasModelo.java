@@ -2,13 +2,12 @@ package ec.edu.ups.poo.modelo;
 
 import ec.edu.ups.poo.clases.*;
 import ec.edu.ups.poo.enums.EstadoSolicitud;
-import ec.edu.ups.poo.enums.UnidadDeMedida;
-
+import ec.edu.ups.poo.enums.UnidadDeMedida; // Puedes eliminar esta importación si no se usa directamente en el modelo
 import java.util.ArrayList;
 import java.util.List;
 import java.util.GregorianCalendar;
-import java.util.Scanner;
-import java.util.Optional;
+import java.util.Scanner; // Puedes eliminar esta importación
+import java.util.Optional; // Puedes eliminar esta importación
 
 public class GestionDeComprasModelo {
     private List<Proveedor> proveedores;
@@ -94,13 +93,10 @@ public class GestionDeComprasModelo {
         SolicitudDeCompra solicitud = findSolicitudByNumero(numeroSolicitud);
         if (solicitud != null) {
             double total = 0;
-            List detallesGenericos = solicitud.getList();
+            List<DetalleCompra> detallesGenericos = solicitud.getList();
             if (detallesGenericos != null) {
-                for (Object obj : detallesGenericos) {
-                    if (obj instanceof DetalleCompra) {
-                        DetalleCompra d = (DetalleCompra) obj;
-                        total += d.calcularTotal();
-                    }
+                for (DetalleCompra d : detallesGenericos) {
+                    total += d.calcularTotal();
                 }
             }
             return total;
