@@ -1,8 +1,8 @@
 package ec.edu.ups.poo.enums;
 
 public enum UnidadDeMedida {
-    TALLA,
+    LIBRA,
     KILOGRAMO,
     LITRO,
-    METRO,
+    GRAMO,
 }
