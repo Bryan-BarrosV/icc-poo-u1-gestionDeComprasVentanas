@@ -10,6 +10,7 @@ public class VentanaSolicitud extends Frame {
     public VentanaSolicitud(String title, GestionDeComprasModelo modelo ) {
         super(title);
         this.modelo = modelo;
+        setBackground(new Color(255, 255, 204));
         setSize(500, 300);
         addWindowListener(new WindowAdapter() {
 
